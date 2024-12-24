@@ -1,12 +1,15 @@
-"use client"
+'use client'
+
 import { useState, useEffect } from 'react'
 import { getTimeRemaining } from '@/utils/dateUtils'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Image from "next/image"
-
+import eaterEggPic from "../public/Scherm­afbeelding 2024-12-24 om 14.24.43.png"
 
 export default function Home() {
   const [timeRemaining, setTimeRemaining] = useState(getTimeRemaining())
+  const [heartClicks, setHeartClicks] = useState(0)
+  const [showEasterEgg, setShowEasterEgg] = useState(false)
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -15,6 +18,17 @@ export default function Home() {
 
     return () => clearInterval(timer)
   }, [])
+
+  const handleHeartClick = () => {
+    setHeartClicks(prev => {
+      const newCount = prev + 1
+      if (newCount === 3) {
+        setShowEasterEgg(true)
+        return 0 // Reset the count
+      }
+      return newCount
+    })
+  }
 
   return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
@@ -51,10 +65,32 @@ export default function Home() {
                   <span className="text-sm text-gray-500">seconds</span>
                 </div>
               </div>
-              <p className="text-xl mb-4">until we go to Budapest bb❤️!</p>
+              <p className="text-xl mb-4">
+                until we go to Budapest bb
+                <span
+                    className="cursor-pointer transition-transform hover:scale-125 inline-block"
+                    onClick={handleHeartClick}
+                >
+                ❤️
+              </span>
+                !
+              </p>
             </div>
+            {showEasterEgg && (
+                <div className="mt-4 text-center">
+                  <p className="text-lg mb-2">I love u bb</p>
+                  <div className="relative w-full">
+                    <Image
+                        src={eaterEggPic}
+                        alt="Easter Egg Image"
+                        className="object-cover rounded-lg"
+                    />
+                  </div>
+                </div>
+            )}
           </CardContent>
         </Card>
       </div>
   )
 }
+
