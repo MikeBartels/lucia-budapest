@@ -10,6 +10,7 @@ export default function Home() {
   const [timeRemaining, setTimeRemaining] = useState(getTimeRemaining())
   const [heartClicks, setHeartClicks] = useState(0)
   const [showEasterEgg, setShowEasterEgg] = useState(false)
+  console.log(heartClicks)
 
   useEffect(() => {
     const timer = setInterval(() => {
