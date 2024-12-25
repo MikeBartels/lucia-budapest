@@ -1,16 +1,20 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { getTimeRemaining } from '@/utils/dateUtils'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Image from "next/image"
-import eaterEggPic from "../public/Scherm­afbeelding 2024-12-24 om 14.24.43.png"
+import pictureTogether from "../public/Scherm­afbeelding 2024-12-24 om 14.24.43.png"
+import {redirect} from "next/navigation";
+
 
 export default function Home() {
   const [timeRemaining, setTimeRemaining] = useState(getTimeRemaining())
   const [heartClicks, setHeartClicks] = useState(0)
   const [showEasterEgg, setShowEasterEgg] = useState(false)
+  const [keySequence, setKeySequence] = useState('')
   console.log(heartClicks)
+  console.log(keySequence)
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -30,6 +34,28 @@ export default function Home() {
       return newCount
     })
   }
+
+  const playTune = useCallback(async () => {
+    redirect("https://www.youtube.com/watch?v=VHrLPs3_1Fs&ab_channel=GeorgeEzraVEVO")
+  }, []);
+
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      setKeySequence(prev => {
+        const newSequence = (prev + event.key).slice(-3).toUpperCase()
+        if (newSequence === 'BUD') {
+          playTune()
+        }
+        return newSequence
+      })
+    }
+
+    window.addEventListener('keydown', handleKeyPress)
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress)
+    }
+  }, [playTune])
 
   return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
@@ -79,10 +105,10 @@ export default function Home() {
             </div>
             {showEasterEgg && (
                 <div className="mt-4 text-center">
-                  <p className="text-lg mb-2">I love u bb</p>
+                  <p className="text-lg mb-2">I Love u</p>
                   <div className="relative w-full">
                     <Image
-                        src={eaterEggPic}
+                        src={pictureTogether}
                         alt="Easter Egg Image"
                         className="object-cover rounded-lg"
                     />
