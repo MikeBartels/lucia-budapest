@@ -119,7 +119,7 @@ export function BudapestQuiz({ isOpen, onClose }: { isOpen: boolean; onClose: ()
                                         You answered {correctAnswers} out of {quizQuestions.length} questions correctly!
                                     </p>
                                     {allCorrect ? (
-                                        <p className="text-xl font-bold text-center text-green-600">You're ready for Budapest BB!</p>
+                                        <p className="text-xl font-bold text-center text-green-600">You&apos;re ready for Budapest BB!</p>
                                     ) : (
                                         <p className="text-xl font-bold text-center text-yellow-600">Try harder Dumb Dumb</p>
                                     )}

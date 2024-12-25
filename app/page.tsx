@@ -124,7 +124,7 @@ export default function Home() {
                     </span>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>I can't wait to explore with you my love❤️!</p>
+                      <p>I can&apos;t wait to explore with you my love❤️!</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
