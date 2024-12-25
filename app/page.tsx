@@ -5,21 +5,26 @@ import { getTimeRemaining } from '@/utils/dateUtils'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Image from "next/image"
 import pictureTogether from "../public/Scherm­afbeelding 2024-12-24 om 14.24.43.png"
-import {redirect} from "next/navigation";
-
+import { redirect } from "next/navigation"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { BudapestQuiz } from '@/components/BudapestQuiz'
 
 export default function Home() {
   const [timeRemaining, setTimeRemaining] = useState(getTimeRemaining())
   const [heartClicks, setHeartClicks] = useState(0)
   const [showEasterEgg, setShowEasterEgg] = useState(false)
   const [keySequence, setKeySequence] = useState('')
+  const [showTooltip, setShowTooltip] = useState(false)
+  const [showQuiz, setShowQuiz] = useState(false)
+  const [typedKeys, setTypedKeys] = useState('')
   console.log(heartClicks)
   console.log(keySequence)
+  console.log(typedKeys)
 
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeRemaining(getTimeRemaining())
-    }, 1000) // Update every second
+    }, 1000)
 
     return () => clearInterval(timer)
   }, [])
@@ -29,7 +34,7 @@ export default function Home() {
       const newCount = prev + 1
       if (newCount === 3) {
         setShowEasterEgg(true)
-        return 0 // Reset the count
+        return 0
       }
       return newCount
     })
@@ -47,6 +52,15 @@ export default function Home() {
           playTune()
         }
         return newSequence
+      })
+
+      setTypedKeys(prev => {
+        const newTyped = (prev + event.key).slice(-4).toLowerCase()
+        if (newTyped === 'quiz') {
+          setShowQuiz(true)
+          return ''
+        }
+        return newTyped
       })
     }
 
@@ -94,13 +108,32 @@ export default function Home() {
               </div>
               <p className="text-xl mb-4">
                 until we go to Budapest bb
+                <TooltipProvider>
+                  <Tooltip open={showTooltip}>
+                    <TooltipTrigger asChild>
+                    <span
+                        className="cursor-pointer transition-transform hover:scale-125 inline-block ml-1"
+                        onClick={handleHeartClick}
+                        onMouseEnter={() => {
+                          const timer = setTimeout(() => setShowTooltip(true), 1000)
+                          return () => clearTimeout(timer)
+                        }}
+                        onMouseLeave={() => setShowTooltip(false)}
+                    >
+                      ❤️
+                    </span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>I can't wait to explore with you my love❤️!</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
                 <span
-                    className="cursor-pointer transition-transform hover:scale-125 inline-block"
-                    onClick={handleHeartClick}
+                    className="cursor-pointer text-transparent hover:text-black transition-colors duration-300"
+                    aria-label="Hidden Budapest Quiz trigger"
                 >
-                ❤️
-              </span>
                 !
+              </span>
               </p>
             </div>
             {showEasterEgg && (
@@ -117,6 +150,7 @@ export default function Home() {
             )}
           </CardContent>
         </Card>
+        <BudapestQuiz isOpen={showQuiz} onClose={() => setShowQuiz(false)} />
       </div>
   )
 }
