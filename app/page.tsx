@@ -8,6 +8,7 @@ import pictureTogether from "../public/Scherm­afbeelding 2024-12-24 om 14.24.43
 import { redirect } from "next/navigation"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { BudapestQuiz } from '@/components/BudapestQuiz'
+import { HeartAnimation } from '@/components/HeartAnimation'
 
 export default function Home() {
   const [timeRemaining, setTimeRemaining] = useState(getTimeRemaining())
@@ -17,6 +18,7 @@ export default function Home() {
   const [showTooltip, setShowTooltip] = useState(false)
   const [showQuiz, setShowQuiz] = useState(false)
   const [typedKeys, setTypedKeys] = useState('')
+  const [showHeartAnimation, setShowHeartAnimation] = useState(false)
   console.log(heartClicks)
   console.log(keySequence)
   console.log(typedKeys)
@@ -56,6 +58,11 @@ export default function Home() {
 
       setTypedKeys(prev => {
         const newTyped = (prev + event.key).slice(-4).toLowerCase()
+        if (newTyped === 'love') {
+          setShowHeartAnimation(true)
+          setTimeout(() => setShowHeartAnimation(false), 3000) // Hide animation after 3 seconds
+          return ''
+        }
         if (newTyped === 'quiz') {
           setShowQuiz(true)
           return ''
@@ -151,6 +158,7 @@ export default function Home() {
           </CardContent>
         </Card>
         <BudapestQuiz isOpen={showQuiz} onClose={() => setShowQuiz(false)} />
+        {showHeartAnimation && <HeartAnimation />}
       </div>
   )
 }
