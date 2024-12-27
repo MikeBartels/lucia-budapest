@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { getTimeRemaining } from '@/utils/dateUtils'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Image from "next/image"
@@ -9,6 +9,30 @@ import { redirect } from "next/navigation"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { BudapestQuiz } from '@/components/BudapestQuiz'
 import { HeartAnimation } from '@/components/HeartAnimation'
+import Video from '@/components/Video'
+
+const TimeDisplay = React.memo(({ timeRemaining }: { timeRemaining: ReturnType<typeof getTimeRemaining> }) => (
+    <div className="grid grid-cols-4 gap-4 mb-6">
+      <div className="flex flex-col">
+        <span className="text-4xl font-bold tabular-nums">{timeRemaining.days}</span>
+        <span className="text-sm text-gray-500">days</span>
+      </div>
+      <div className="flex flex-col">
+        <span className="text-4xl font-bold tabular-nums">{timeRemaining.hours.toString().padStart(2, '0')}</span>
+        <span className="text-sm text-gray-500">hours</span>
+      </div>
+      <div className="flex flex-col">
+        <span className="text-4xl font-bold tabular-nums">{timeRemaining.minutes.toString().padStart(2, '0')}</span>
+        <span className="text-sm text-gray-500">minutes</span>
+      </div>
+      <div className="flex flex-col">
+        <span className="text-4xl font-bold tabular-nums">{timeRemaining.seconds.toString().padStart(2, '0')}</span>
+        <span className="text-sm text-gray-500">seconds</span>
+      </div>
+    </div>
+))
+
+TimeDisplay.displayName = 'TimeDisplay'
 
 export default function Home() {
   const [timeRemaining, setTimeRemaining] = useState(getTimeRemaining())
@@ -31,7 +55,7 @@ export default function Home() {
     return () => clearInterval(timer)
   }, [])
 
-  const handleHeartClick = () => {
+  const handleHeartClick = useCallback(() => {
     setHeartClicks(prev => {
       const newCount = prev + 1
       if (newCount === 3) {
@@ -40,7 +64,7 @@ export default function Home() {
       }
       return newCount
     })
-  }
+  }, [])
 
   const playTune = useCallback(async () => {
     redirect("https://www.youtube.com/watch?v=VHrLPs3_1Fs&ab_channel=GeorgeEzraVEVO")
@@ -82,37 +106,14 @@ export default function Home() {
       <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
         <Card className="w-full max-w-2xl overflow-hidden">
           <div className="relative w-full h-64">
-            <Image
-                src="https://images.unsplash.com/photo-1523650092835-8ff285f4fc04?q=80&w=2934&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                alt="Budapest Parliament Building at sunset"
-                fill
-                className="object-cover"
-                priority
-            />
+            <Video src="/Budapest in 4K.mp4" />
           </div>
           <CardHeader>
             <CardTitle className="text-2xl font-bold text-center">Budapest Trip Countdown</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-center">
-              <div className="grid grid-cols-4 gap-4 mb-6">
-                <div className="flex flex-col">
-                  <span className="text-4xl font-bold tabular-nums">{timeRemaining.days}</span>
-                  <span className="text-sm text-gray-500">days</span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-4xl font-bold tabular-nums">{timeRemaining.hours.toString().padStart(2, '0')}</span>
-                  <span className="text-sm text-gray-500">hours</span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-4xl font-bold tabular-nums">{timeRemaining.minutes.toString().padStart(2, '0')}</span>
-                  <span className="text-sm text-gray-500">minutes</span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-4xl font-bold tabular-nums">{timeRemaining.seconds.toString().padStart(2, '0')}</span>
-                  <span className="text-sm text-gray-500">seconds</span>
-                </div>
-              </div>
+              <TimeDisplay timeRemaining={timeRemaining} />
               <p className="text-xl mb-4">
                 until we go to Budapest bb
                 <TooltipProvider>
